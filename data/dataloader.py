@@ -2,8 +2,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset, DataLoader
 import torch
-
-
 class PairedSequenceDataset(Dataset):
     def __init__(self, cdrh3_data, epitope_data):
         self.cdrh3_data = cdrh3_data
@@ -19,12 +17,13 @@ class PairedSequenceDataset(Dataset):
         return cdrh3_onehot, epitope_onehot
 
 
-def get_dataloaders(cdrh3_npy, epitope_npy, batch_size=32, test_size=0.2, shuffle=True, num_workers=0):
+def get_dataloaders(cdrh3_npy_file, epitope_npy_file, batch_size=32, test_size=0.2, shuffle=True, num_workers=0):
     """
     创建训练和验证的 DataLoader。
+
     """
-    cdrh3_data = np.load(cdrh3_npy, allow_pickle=True)
-    epitope_data = np.load(epitope_npy, allow_pickle=True)
+    cdrh3_data = np.load(cdrh3_npy_file, allow_pickle=True)
+    epitope_data = np.load(epitope_npy_file, allow_pickle=True)
 
     # 划分训练集和验证集
     cdrh3_train, cdrh3_valid, epitope_train, epitope_valid = train_test_split(

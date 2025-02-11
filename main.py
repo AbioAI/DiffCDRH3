@@ -1,13 +1,13 @@
-import yaml
-import importlib
 from config import *
 from LDM.LatentDiffusion import *
 from data.dataloader import *
 
+
 def load_config_from_yaml(yaml_file):
-    with open(yaml_file,"r") as f:
+    with open(yaml_file, "r") as f:
         config = yaml.safe_load(f)
     return config
+
 
 def train(model, train_loader, val_loader, num_epochs=100):
     model.train()  # 将模型设置为训练模式
@@ -17,7 +17,7 @@ def train(model, train_loader, val_loader, num_epochs=100):
         for i, (inputs, cont) in enumerate(train_loader):
             inputs, cont = inputs.to(device), cont.to(device)
             opt.zero_grad()
-            loss = model(inputs,cont)
+            loss = model(inputs, cont)
             loss.backward()
             opt.step()
 
@@ -26,7 +26,8 @@ def train(model, train_loader, val_loader, num_epochs=100):
             # 每 100 个批次输出一次损失
             if i % 10 == 0:
                 avg_loss = running_loss / len(train_loader)
-                print(f"Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(train_loader)}], Loss: {avg_loss.item():.4f}")
+                print(
+                    f"Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(train_loader)}], Loss: {avg_loss.item():.4f}")
 
             # 每个 epoch 输出平均损
             if i % 30 == 0:
@@ -44,6 +45,7 @@ def train(model, train_loader, val_loader, num_epochs=100):
 
         print("Training Finished!")
 
+
 if __name__ == "__main__":
     yaml_file = r""
     config = load_config_from_yaml(yaml_file)
@@ -53,13 +55,11 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    cdrh3_npy =np.load()
-    epitope_npy =np.load()
-
+    cdrh3_npy_file = f''
+    epitope_npy_file = f''
     # 损失函数，优化器
-    #opt, scheduler = model.configure_optimizers()
-    train_loader, valid_loader = get_dataloaders(cdrh3_npy, epitope_npy, batch_size=32,
+    # opt, scheduler = model.configure_optimizers()
+    train_loader, valid_loader = get_dataloaders(cdrh3_npy_file, epitope_npy_file, batch_size=32,
                                                  test_size=0.2, shuffle=True, num_workers=0)
 
     train(model, train_loader, num_epochs=100)
-
